@@ -1,14 +1,14 @@
 import pygame
 
-from src.Constants import WINDOW_WIDTH, WINDOW_HEIGHT, WHITE, BLACK, BACKGROUND, BACKGROUND_WIN, BACKGROUND_LOST
+from src.Constants import WINDOW_WIDTH, WINDOW_HEIGHT,  BACKGROUND, BACKGROUND_WIN, BACKGROUND_LOST, COLORS
 
-def getGeneralBackground():
+def get_general_background():
     background = pygame.image.load(BACKGROUND)
     background_rect = background.get_rect()
     background_rect.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
     return background
 
-def getWinBackground():
+def get_win_background():
     background = pygame.image.load(BACKGROUND_WIN)
     original_width, original_height = background.get_size()
     new_width = int(original_width * 0.5)
@@ -18,77 +18,64 @@ def getWinBackground():
     background_rect_win.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
     return background
 
-def getLostBackground():
+def get_lost_background():
     background = pygame.image.load(BACKGROUND_LOST)
     background_rect_lost = background.get_rect()
     background_rect_lost.center = (WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2)
     return background
 
-def gameStart(game_window, font):
+def game_start(drawer):
 
-    background = getGeneralBackground()
-    game_window.blit(background, (0, 0))
+    font = pygame.font.Font(None, 30)
+    background = get_general_background()
+    drawer.render_background(background, (0, 0))
 
     # Rendering menu
-    text = font.render("Bienvenido a Eusudokure", True, WHITE)
-    game_window.blit(text, (100, 120))
+    drawer.render_text(text="Bienvenido a Eusudokure", position=(100, 120), color=COLORS['WHITE'], font = font)
 
-    text = font.render("Selecciona la dificultad:", True, WHITE)
-    game_window.blit(text, (100, 250))
+    drawer.render_text(text="Selecciona la dificultad:", position=(100, 250), color=COLORS['WHITE'], font = font)
 
-    pygame.draw.rect(game_window, WHITE, (40, 350, 90, 30), 1)
-    text = font.render("Facil", True, WHITE)
-    game_window.blit(text, (50, 350))
+    drawer.render_button(text="Facil", dimension=(40, 350, 90, 30), position=(50, 350), color=COLORS['WHITE'], font = font)
 
-    pygame.draw.rect(game_window, WHITE, (180, 350, 90, 30), 1)
-    text = font.render("Normal", True, WHITE)
-    game_window.blit(text, (190, 350))
+    drawer.render_button(text="Normal", dimension=(180, 350, 90, 30), position=(190, 350), color=COLORS['WHITE'], font = font)
 
-    pygame.draw.rect(game_window, WHITE, (330, 350, 90, 30), 1)
-    text = font.render("Dificil", True, WHITE)
-    game_window.blit(text, (350, 350))
+    drawer.render_button(text="Dificil", dimension=(330, 350, 90, 30), position=(350, 350), color=COLORS['WHITE'], font = font)
 
-def gameInProgress(game_window, font, board):
+def game_in_progress(drawer, board):
 
-    background = getGeneralBackground()
-    game_window.blit(background, (0, 0))
+    font = pygame.font.Font(None, 30)
+    background = get_general_background()
+    drawer.render_background(background, (0, 0))
 
     # Rendering in progress game
-    board.draw()
+    board.draw(drawer)
 
     # Rendering buttons
-    pygame.draw.rect(game_window, BLACK, (40, 460, 90, 30), 1)
-    text = font.render("reset", True, BLACK)
-    game_window.blit(text, (50, 460))
+    drawer.render_button(text="Reset", dimension=(40, 460, 90, 30), position=(50, 460), font = font)
 
-    pygame.draw.rect(game_window, BLACK, (180, 460, 90, 30), 1)
-    text = font.render("restart", True, BLACK)
-    game_window.blit(text, (200, 460))
+    drawer.render_button(text="Restart", dimension=(180, 460, 90, 30), position=(200, 460), font=font)
 
-    pygame.draw.rect(game_window, BLACK, (330, 460, 90, 30), 1)
-    text = font.render("exit", True, BLACK)
-    game_window.blit(text, (350, 460))
+    drawer.render_button(text="Exit", dimension=(330, 460, 90, 30), position=(350, 460), font=font)
 
-def gameOver(game_window, font, board):
+def game_over(drawer, board):
+
+    font = pygame.font.Font(None, 30)
+
     # Check board. game_over_state TRUE => WIN. FALSE => LOST
     if board.game_over_state:
-        background = getWinBackground()
-        game_window.blit(background, (0, 0))
+        background = get_win_background()
+        drawer.render_background(background, (0, 0))
 
-        text = font.render("Game Won!", True, WHITE)
-        game_window.blit(text, (200, 250))
+        drawer.render_text(text="Ganaste!", position=(200, 250), color=COLORS['WHITE'], font=font)
 
-        text = font.render("Exit", True, WHITE)
-        game_window.blit(text, (220, 410))
+        drawer.render_text(text="Salir", position=(220, 410), color=COLORS['WHITE'], font=font)
     else:
 
-        background = getLostBackground()
-        game_window.blit(background, (0, 0))
+        background = get_lost_background()
+        drawer.render_background(background, (0, 0))
 
-        text = font.render("Game Over", True, WHITE)
-        game_window.blit(text, (200, 250))
+        drawer.render_text(text="Perdiste!", position=(200, 250), color=COLORS['WHITE'], font=font)
 
-        text = font.render("Restart", True, WHITE)
-        game_window.blit(text, (220, 410))
+        drawer.render_text(text="Reiniciar", position=(220, 410), color=COLORS['WHITE'], font=font)
 
-    pygame.draw.rect(game_window, WHITE, (200, 400, 140, 40), 1)
+    drawer.draw_rect(params=(200, 400, 140, 40), width=1, color=COLORS['WHITE'])

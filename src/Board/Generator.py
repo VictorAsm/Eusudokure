@@ -10,21 +10,37 @@ class Generator:
     Entonces deberia quedarte algo como
         def __init__(self, k):
             self.k = k
-            self.grid = [ grilla de listas de valores de 0 a 9, 9 listas]. Si te fijas en el generator.py que pusiste, ese grid cae perfecto aca
-    
-    """
-    def __init__(self, k, grid):
-        self.k = k
-        self.grid = grid # esto podria ser self.grid = La mouse herramienta misteriosa
 
-    # Good
+    """
+    def __init__(self, k):
+        self.k = k
+        self.grid = grid = [[0] * 9 for _ in range(9)] # La mouse herramienta misteriosa
+        """self.grid = [ grilla de listas de valores de 0 a 9, 9 listas]. 
+        Si te fijas en el generator.py que pusiste, ese grid cae perfecto aca
+        """
+
     def setK(self, k):
         self.k = k
 
-    # Hacete una funcion getGrid que devuelva solo el grid. def getGrid(self): dame grid
-    
-    # def fillBox(self):
-    # Un chingo de logica
+    def getGrid(self):
+        return self.grid
+
+    def fillBox(self):
+        for i in range(3):
+            for j in range(3):
+                while True:
+                    # Generate a random number between 1 and 9
+                    num = random.randint(1, 9)
+                    if unUsedInBox(self.grid, row, col, num):
+                        break
+                self.grid[row + i][col + j] = num
+
+    def unUsedInBox(grid, rowStart, colStart, num):
+        for i in range(3):
+            for j in range(3):
+                if grid[rowStart + i][colStart + j] == num:
+                    return False
+        return True
 
     """
     Te faltan funciones para agregar. Aca tene presente que la grid no necesariamente va a pasar como parametro. Esto anda probando, que funciona mejor.
@@ -35,25 +51,14 @@ class Generator:
     Incluso, puedes llamar a otras funciones dentro de tu clase, usando self. Haces self.function y listo
     """
     def fillDiagonal(self):
-        pass # Este pass es como un return true, sirve para que no te marque como funcion incompleta. Quitalo cuando armes la funcion.
-        """
-        Dos ejemplos:
-        # ... completar ...
-        # self.fillBox(self.grid, i, i) # Aca tu funcion recibe el grid por parametro. Como python es python, deberia modificar esa matriz, o por ahi no, probalo ;)
-        
-        # ... completar ...
-        # self.fillBox(i, i) # En este caso, tu fillBox dentro debe llamar a self.grid para completarle lo que corresponda
-        """
+        self.fillBox(self.grid, i, i) # Aca tu funcion recibe el grid por parametro. Como python es python, deberia modificar esa matriz, o por ahi no, probalo ;)
 
     def fillRemaining(self):
         pass # Este pass es como un return true, sirve para que no te marque como funcion incompleta. Quitalo cuando armes la funcion.
 
-    # Como es un metodo de la clase, tambien necesita el self. def removeKDigits(self, grid, k):
-    # Aca tambien puedes usar self.k para no pasar parametro, aunque como lo estas modificando, tendras que reemplazar todos los k por self.k
-    # La otra es una variable temporal, k_aux = self.k, modificas el k_aux pero acordate al final de la funcion hacer self.k = k_aux porque lo modificaste
-    def removeKDigits(grid,k):
-        while k > 0:
+    def removeKDigits(self):
 
+        while self.k > 0:
             # Pick a random cell
             cellId = random.randint(0, 80)
 
@@ -64,11 +69,11 @@ class Generator:
             j = cellId % 9
 
             # Remove the digit if the cell is not already empty
-            if grid[i][j] != 0:
+            if self.grid[i][j] != 0:
                 # Empty the cell
-                grid[i][j] = 0
+                self.grid[i][j] = 0
                 # Decrease the count of digits to remove
-                k -= 1
+                self.k -= 1
 
     """
     Una vez tengas tus funciones, las principales unificalas en un solo metodo: generateSudoku(self). 

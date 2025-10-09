@@ -1,6 +1,9 @@
 import sudoku
 import random
 
+from generator import fillDiagonal
+
+
 class Generator:
     """
     La clase no deberia recibir un grid, porque es tu clase la que lo genera. Sin embargo, a lo largo de tu clase, existe tu grid, por lo que, no la pasas por parametro
@@ -19,19 +22,27 @@ class Generator:
         Si te fijas en el generator.py que pusiste, ese grid cae perfecto aca
         """
 
+    def generateSudoku(self):
+        fillDiagonal(self.grid, 0, 0) #este no tiene self pero los otros si ¿??
+        self.fillRemaining(self, 0, 0)
+        self.removeKDigits(self)
+
+        return self.grid
+
+
     def setK(self, k):
         self.k = k
 
     def getGrid(self):
         return self.grid
 
-    def fillBox(self):
+    def fillBox(self, row, col):
         for i in range(3):
             for j in range(3):
                 while True:
                     # Generate a random number between 1 and 9
                     num = random.randint(1, 9)
-                    if unUsedInBox(self.grid, row, col, num):
+                    if self.unUsedInBox(self.grid, row, col, num):
                         break
                 self.grid[row + i][col + j] = num
 
@@ -53,11 +64,44 @@ class Generator:
     def fillDiagonal(self):
         self.fillBox(self.grid, i, i) # Aca tu funcion recibe el grid por parametro. Como python es python, deberia modificar esa matriz, o por ahi no, probalo ;)
 
-    def fillRemaining(self):
-        pass # Este pass es como un return true, sirve para que no te marque como funcion incompleta. Quitalo cuando armes la funcion.
+    def fillRemaining(self, i, j):
+        # If we've reached the end of the grid
+        if i == 9:
+            return True
+
+        # Move to next row when current row is finished
+        if j == 9:
+            return self.fillRemaining(self.grid, i + 1, 0)
+
+        # Skip if cell is already filled
+        if self.grid[i][j] != 0:
+            return self.fillRemaining(self.grid, i, j + 1)
+
+        # Try numbers 1-9 in current cell
+        for num in range(1, 10):
+            if self.checkIfSafe(self.grid, i, j, num):
+                self.grid[i][j] = num
+                if self.fillRemaining(self.grid, i, j + 1):
+                    return True
+                self.grid[i][j] = 0
+
+        return False
+
+    def checkIfSafe(self, grid, i, j, num):
+        return (self.unUsedInRow(grid, i, num) and
+            self.unUsedInCol(grid, j, num) and
+            self.unUsedInBox(grid, i - i % 3, j - j % 3, num))
+
+    def unUsedInRow(grid, i, num):
+        return num not in grid[i]
+
+    def unUsedInCol(grid, j, num):
+        for i in range(9):
+            if grid[i][j] == num:
+                return False
+        return True
 
     def removeKDigits(self):
-
         while self.k > 0:
             # Pick a random cell
             cellId = random.randint(0, 80)

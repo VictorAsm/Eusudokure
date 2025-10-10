@@ -24,6 +24,10 @@ class Generator:
 
     def generateSudoku(self):
         fillDiagonal(self.grid, 0, 0) #este no tiene self pero los otros si ¿??
+        # Es que estas llamando a fillDiagonal pero del archivo generator. Vos deberias cambiarlo por tu implementación. self.fillDiagonal(...)
+        # Esto porque el archivo generator (si te fijas en los import de arriba) luego va a volar, entonces usa tu metodo que hiciste más abajo
+        # Por cierto, fijate que al fillDiagonal le vas a pasar a demas del grid, 0, 0, pero en tu clase tienes fillDiagonal(self), no recibe nada más. Deberías decirle
+        # que reciba ese parametro. Igual ahi te lo deje con más detalle en esa función
         self.fillRemaining(self, 0, 0)
         self.removeKDigits(self)
 
@@ -63,6 +67,8 @@ class Generator:
     """
     def fillDiagonal(self):
         self.fillBox(self.grid, i, i) # Aca tu funcion recibe el grid por parametro. Como python es python, deberia modificar esa matriz, o por ahi no, probalo ;)
+        # Fijate que cuando llamas a fillBox, i no esta definido. De alguna manera, debes definirlo. Más arriba lo deberías usar, así que quizas tu i venga como parametro.
+        # algo como def fillDiagonal(self, ...)
 
     def fillRemaining(self, i, j):
         # If we've reached the end of the grid
